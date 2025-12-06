@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kitchen Sanctuary</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* RESET */
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  width:100%; height:100%;
+  font-family:'Inter', sans-serif;
+  background:transparent;
+  overflow:hidden;
+}
+
+/* WRAPPER */
+.widget-wrapper {
+  width:100%;
+  max-width:300px;
+  padding:8px 12px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  overflow-y:auto;
+}
+
+/* CARD BASE */
+.time-card, .mantra-card, .sanctuary-card, .streak-card {
+  background:linear-gradient(135deg,#ffffff 0%,#fdfdfb 100%);
+  border-radius:20px;
+  padding:20px 18px;
+  border:1px solid rgba(60,80,50,0.05);
+  box-shadow:0 3px 12px rgba(60,80,50,0.05);
+}
+
+/* TIME CARD */
+.time-card {
+  background:linear-gradient(135deg,#F7F4F0 0%,#EEE9E4 100%);
+  text-align:center;
+}
+
+.section-label {
+  font-size:8px;
+  letter-spacing:2.5px;
+  opacity:0.65;
+  margin-bottom:6px;
+  color:#4a5f3d;
+  text-transform:uppercase;
+}
+
+.time-display {
+  font-family:'Cormorant Garamond', serif;
+  font-size:46px;
+  margin-bottom:14px; /* FIXED CLOCK SPACING */
+  letter-spacing:1.5px;
+  color:#2d3d25;
+}
+
+.date-display {
+  font-size:10px;
+  opacity:0.75;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:#4a5f3d;
+}
+
+/* MANTRA */
+.mantra-icon {
+  font-size:26px;
+  text-align:center;
+  margin-bottom:12px;
+}
+
+.mantra-text {
+  font-family:'Cormorant Garamond', serif;
+  font-size:18px;
+  line-height:1.5;
+  text-align:center;
+  color:#2d3d25;
+}
+
+/* SANCTUARY */
+.sanctuary-message {
+  font-family:'Cormorant Garamond', serif;
+  font-size:21px;
+  text-align:center;
+  margin-bottom:6px;
+}
+
+.sanctuary-subtitle {
+  font-size:10.5px;
+  opacity:0.75;
+  text-align:center;
+}
+
+/* STREAK CARD */
+.streak-label {
+  font-size:8px;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  color:#6b8259;
+  text-align:center;
+  margin-bottom:12px;
+}
+
+.streak-display {
+  text-align:center;
+  margin-bottom:12px;
+}
+
+.streak-number {
+  font-family:'Cormorant Garamond', serif;
+  font-size:38px;
+  margin-bottom:4px;
+  color:#2d3d25;
+}
+
+.streak-text {
+  font-size:11px;
+  color:#4a5f3d;
+}
+
+.streak-text span {
+  color:#6b8259;
+  font-weight:600;
+}
+
+/* BUTTONS */
+.check-in-btn, .undo-btn {
+  background:linear-gradient(135deg,#6b8259 0%,#5d7150 100%);
+  border:none;
+  border-radius:12px;
+  padding:10px 18px;
+  font-size:12px;
+  font-weight:500;
+  width:100%;
+  color:white;
+  cursor:pointer;
+  text-transform:uppercase;
+  margin-top:6px;
+}
+
+.undo-btn {
+  background:linear-gradient(135deg,#b7c2b1 0%,#a8b19f 100%);
+}
+
+.check-in-btn:disabled {
+  opacity:0.55;
+  cursor:not-allowed;
+}
+
+/* MESSAGE */
+.check-in-message {
+  text-align:center;
+  margin-top:8px;
+  font-size:11px;
+  opacity:0;
+  transition:0.25s ease;
+  color:#6b8259;
+}
+
+.check-in-message.visible { opacity:1; }
+
+/* SCROLLBAR */
+.widget-wrapper::-webkit-scrollbar { width:4px; }
+.widget-wrapper::-webkit-scrollbar-thumb {
+  background:rgba(60,80,50,0.2);
+  border-radius:4px;
+}
+</style>
+</head>
+
+<body>
+<div class="widget-wrapper">
+
+  <!-- TIME -->
+  <div class="time-card">
+    <div class="section-label" id="timeLabel">Today</div>
+    <div class="time-display" id="timeDisplay">00:00</div>
+    <div class="date-display" id="dateDisplay">Loading...</div>
+  </div>
+
+  <!-- MANTRA -->
+  <div class="mantra-card">
+    <div class="mantra-icon">🌿</div>
+    <div class="mantra-text" id="mantraText">Loading...</div>
+  </div>
+
+  <!-- SANCTUARY -->
+  <div class="sanctuary-card">
+    <div class="sanctuary-message" id="sanctuaryMessage">Your Kitchen, Your Sanctuary</div>
+    <div class="sanctuary-subtitle">Nourish with intention</div>
+  </div>
+
+  <!-- STREAK -->
+  <div class="streak-card">
+    <div class="streak-label" id="streakLabel">Planning Journey</div>
+
+    <div class="streak-display">
+      <div class="streak-number" id="streakNumber">0</div>
+      <div class="streak-text" id="streakText">Begin your planning practice</div>
+    </div>
+
+    <button class="check-in-btn" id="checkInBtn">Mark This Week Planned</button>
+    <button class="undo-btn" id="undoBtn" style="display:none;">Undo</button>
+
+    <div class="check-in-message" id="checkInMessage">Week tracked! ✨</div>
+  </div>
+
+</div>
+
+<script>
+/* CONFIG */
+const defaultConfig = {
+  time_label: "Today",
+  sanctuary_message: "Your Kitchen, Your Sanctuary",
+  streak_label: "Planning Journey"
+};
+
+const mantras = [
+  "Cooking is love made visible",
+  "Nourishment begins with intention",
+  "Every meal is an act of self-care",
+  "The kitchen is where memories are seasoned",
+  "Meal planning is a love letter to your future self",
+  "Mindful eating begins with mindful planning",
+  "The best recipes are made with intention"
+];
+
+/* CLOCK */
+function updateClock() {
+  const now = new Date();
+  const hh = now.getHours().toString().padStart(2,'0');
+  const mm = now.getMinutes().toString().padStart(2,'0');
+  document.getElementById("timeDisplay").textContent = `${hh}:${mm}`;
+
+  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  document.getElementById("dateDisplay").textContent =
+    `${days[now.getDay()]} · ${months[now.getMonth()]} ${now.getDate()}`;
+}
+
+/* MANTRA */
+function displayRandomMantra() {
+  document.getElementById("mantraText").textContent =
+    mantras[Math.floor(Math.random()*mantras.length)];
+}
+
+/* WEEK LOGIC */
+function getWeekStart(date){
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  return new Date(d.setDate(diff)).toISOString().split("T")[0];
+}
+
+function markWeekPlanned(){
+  const week = getWeekStart(new Date());
+  localStorage.setItem("kitchen_planning_week", week);
+  showCheckInMessage("Week tracked! ✨");
+  updateStreakUI();
+}
+
+function undoWeek(){
+  localStorage.removeItem("kitchen_planning_week");
+  showCheckInMessage("Reset ✓");
+  updateStreakUI();
+}
+
+function updateStreakUI(){
+  const week = getWeekStart(new Date());
+  const saved = localStorage.getItem("kitchen_planning_week");
+
+  const num = document.getElementById("streakNumber");
+  const txt = document.getElementById("streakText");
+  const btn = document.getElementById("checkInBtn");
+  const undo = document.getElementById("undoBtn");
+
+  if(saved === week){
+    num.textContent = "1";
+    txt.innerHTML = "<span>1</span> week planned with intention";
+    btn.textContent = "This Week Planned ✓";
+    btn.disabled = true;
+    undo.style.display = "block";
+  } else {
+    num.textContent = "0";
+    txt.textContent = "Begin your planning practice";
+    btn.textContent = "Mark This Week Planned";
+    btn.disabled = false;
+    undo.style.display = "none";
+  }
+}
+
+function showCheckInMessage(msg){
+  const el = document.getElementById("checkInMessage");
+  el.textContent = msg;
+  el.classList.add("visible");
+  setTimeout(()=>el.classList.remove("visible"),1800);
+}
+
+/* INIT */
+function init(){
+  document.getElementById("timeLabel").textContent = defaultConfig.time_label;
+  document.getElementById("sanctuaryMessage").textContent = defaultConfig.sanctuary_message;
+  document.getElementById("streakLabel").textContent = defaultConfig.streak_label;
+
+  updateClock();
+  setInterval(updateClock,1000);
+
+  displayRandomMantra();
+
+  document.getElementById("checkInBtn").onclick = markWeekPlanned;
+  document.getElementById("undoBtn").onclick = undoWeek;
+
+  updateStreakUI();
+}
+
+window.onload = init;
+</script>
+
+</body>
+</html>
